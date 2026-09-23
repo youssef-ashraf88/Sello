@@ -1,0 +1,26 @@
+# Visual Studio
+.vs/
+
+# Build output
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+
+# Configuration / Secrets
+**/appsettings.json
+**/appsettings.*.json
+**/.env
+**/.env.*
+
+# Logs
+*.log
+
+# Test results
+TestResults/
+
+# OS files
+.DS_Store
+Thumbs.db

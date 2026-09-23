@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Sello.Application/Sello.Application.csproj" />
+  <Project Path="Sello.Domain/Sello.Domain.csproj" />
+  <Project Path="Sello.Infrastructure/Sello.Infrastructure.csproj" />
+  <Project Path="Sello/Sello.Api.csproj" />
+</Solution>
