@@ -1,4 +1,5 @@
 using Sello.Api.StartupExtensions;
+using Sello.Application.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

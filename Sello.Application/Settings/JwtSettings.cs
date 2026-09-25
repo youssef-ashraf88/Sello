@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Sello.Infrastructure.Settings
+namespace Sello.Application.Settings
 {
-    public class Jwt
+    public class JwtSettings
     {
         public string? Key { get; set; }
         public string? Issuer { get; set; }

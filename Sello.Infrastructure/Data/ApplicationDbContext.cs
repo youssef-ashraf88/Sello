@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Sello.Domain.Entities;
 using Sello.Domain.Entities.Identity;
+using Sello.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -29,6 +30,23 @@ namespace Sello.Infrastructure.Data
 
             modelBuilder.ApplyConfigurationsFromAssembly(
                 typeof(ApplicationDbContext).Assembly);
+
+            modelBuilder.Entity<ApplicationRole>().HasData(
+                new ApplicationRole
+                {
+                    Id = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"),
+                    Name = RoleOptions.Customer.ToString(),
+                    NormalizedName = RoleOptions.Customer.ToString().ToUpper(),
+                    ConcurrencyStamp = "customer-role-stamp"
+                },
+                new ApplicationRole
+                {
+                    Id = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"),
+                    Name = RoleOptions.Admin.ToString(),
+                    NormalizedName = RoleOptions.Admin.ToString().ToUpper(),
+                    ConcurrencyStamp = "admin-role-stamp"
+                }
+            );
         }
     }
 }
