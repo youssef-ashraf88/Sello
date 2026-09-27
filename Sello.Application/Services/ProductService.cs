@@ -72,17 +72,42 @@ namespace Sello.Application.Services
             return true;
         }
 
-        public async Task<IEnumerable<ProductResponseDto>> GetAllProducts()
+        public async Task<PagedResultResponseDto<ProductResponseDto>> GetAllProducts(ProductQueryParamsDto productQueryParamsDto)
         {
+            const int maxPageSize = 50;
+            var pageNumber = productQueryParamsDto.PageNumber < 1 ? 1 : productQueryParamsDto.PageNumber;
+            var pageSize = productQueryParamsDto.PageSize < 1 ? 10 : productQueryParamsDto.PageSize;
+            if (pageSize > maxPageSize)
+                pageSize = maxPageSize;
+            
+
             var isAdmin = _httpContextAccessor.HttpContext?.User.IsInRole("Admin") ?? false;
 
-            var productsQuery = isAdmin ? _productRepository.GetAllProductsForAdmins() : _productRepository.GetAllProducts();
+            var productQueryParam = _mapper.Map<ProductQueryParams>(productQueryParamsDto);
+            productQueryParam.PageNumber = pageNumber;
+            productQueryParam.PageSize = pageSize;
+
+            var productsQuery = isAdmin ? _productRepository.GetAllProductsForAdmins(productQueryParam) : _productRepository.GetAllProducts(productQueryParam);
+
+            var totalCount = await productsQuery.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+            var skip = (pageNumber - 1) * pageSize;
 
             var products = await productsQuery
+                .Skip(skip)
+                .Take(pageSize)
                 .ProjectTo<ProductResponseDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return products;
+
+            return new PagedResultResponseDto<ProductResponseDto>
+            {
+                Items = products,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
         }
 
         public async Task<ProductResponseDto?> GetProductById(Guid id)

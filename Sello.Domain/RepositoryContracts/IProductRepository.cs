@@ -11,9 +11,9 @@ namespace Sello.Domain.RepositoryContracts
 
         Task DeleteProduct(Product product);
 
-        IQueryable<Product> GetAllProducts();
+        IQueryable<Product> GetAllProducts(ProductQueryParams productQueryParams);
 
-        IQueryable<Product> GetAllProductsForAdmins();
+        IQueryable<Product> GetAllProductsForAdmins(ProductQueryParams productQueryParams);
 
         Task<Product?> GetProductById(Guid id);
 

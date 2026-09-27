@@ -3,6 +3,7 @@ using Sello.Application.DTO;
 using Sello.Domain.Entities;
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace Sello.Application.Mappings
@@ -24,7 +25,9 @@ namespace Sello.Application.Mappings
             CreateMap<UpdateProductDto, Product>();
 
             CreateMap<Product, ProductResponseDto>()
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category!.Name));
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
+
+            CreateMap<ProductQueryParamsDto, ProductQueryParams>();
         }
     }
 }

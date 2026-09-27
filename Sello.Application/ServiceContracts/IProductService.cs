@@ -13,7 +13,7 @@ namespace Sello.Application.ServiceContracts
 
         Task<bool> EditProduct(Guid id, UpdateProductDto newProduct);
 
-        Task<IEnumerable<ProductResponseDto>> GetAllProducts();
+        Task<PagedResultResponseDto<ProductResponseDto>> GetAllProducts(ProductQueryParamsDto productQueryParamsDto);
 
         Task<ProductResponseDto?> GetProductById(Guid id);
     }

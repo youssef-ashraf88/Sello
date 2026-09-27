@@ -52,9 +52,9 @@ namespace Sello.Api.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<ProductResponseDto>>> GetAllProducts()
+        public async Task<ActionResult<PagedResultResponseDto<ProductResponseDto>>> GetAllProducts([FromQuery] ProductQueryParamsDto productQueryParamsDto)
         {
-            var products = await _productService.GetAllProducts();
+            var products = await _productService.GetAllProducts(productQueryParamsDto);
 
             return Ok(products);
         }

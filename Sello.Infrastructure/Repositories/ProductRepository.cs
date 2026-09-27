@@ -29,14 +29,24 @@ namespace Sello.Infrastructure.Repositories
             await Save();
         }
 
-        public IQueryable<Product> GetAllProducts()
+        public IQueryable<Product> GetAllProducts(ProductQueryParams productQueryParams)
         {
-            return _db.Products.AsNoTracking().AsQueryable().Where(p => p.IsActive);
+            var query = _db.Products.Where(p => p.IsActive).AsNoTracking();
+
+            query = query.Applyfilters(productQueryParams); // search handel
+            query = query.ApplySorting(productQueryParams); // sort handel
+
+            return query;
         }
 
-        public IQueryable<Product> GetAllProductsForAdmins()
+        public IQueryable<Product> GetAllProductsForAdmins(ProductQueryParams productQueryParams)
         {
-            return _db.Products.AsNoTracking().AsQueryable();
+            var query = _db.Products.AsNoTracking().AsQueryable();
+
+            query = query.Applyfilters(productQueryParams);
+            query = query.ApplySorting(productQueryParams);
+
+            return query;
         }
 
         public async Task<Product?> GetProductById(Guid id)
@@ -63,6 +73,43 @@ namespace Sello.Infrastructure.Repositories
         public async Task Save()
         {
             await _db.SaveChangesAsync();
+        }
+    }
+
+    public static class QueryFilter
+    {
+        public static IQueryable<Product> Applyfilters(this IQueryable<Product> query, ProductQueryParams parameter)
+        {
+            if (!string.IsNullOrWhiteSpace(parameter.Search))
+                query = query.Where(p => p.Name!.Contains(parameter.Search));
+
+            if (parameter.CategoryId.HasValue)
+                query = query.Where(p => p.CategoryId == parameter.CategoryId);
+
+            if (parameter.MinPrice.HasValue)
+                query = query.Where(p => p.Price >= parameter.MinPrice);
+
+            if (parameter.MaxPrice.HasValue)
+                query = query.Where(p => p.Price <= parameter.MaxPrice);
+
+            return query;
+        }
+
+        public static IQueryable<Product> ApplySorting(this IQueryable<Product> query, ProductQueryParams parameter)
+        {
+            if (string.IsNullOrWhiteSpace(parameter.SortBy))
+                return query;
+
+            bool descending = parameter.SortOrder?.ToLower() == "desc";
+
+            return parameter.SortBy.ToLower() switch
+            {
+                "price" => descending ? query.OrderByDescending(p => p.Price) : query.OrderBy(p => p.Price),
+
+                "name" => descending ? query.OrderByDescending(p => p.Name) : query.OrderBy(p => p.Name),
+
+                _ => query
+            };
         }
     }
 }
