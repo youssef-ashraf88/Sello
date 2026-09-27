@@ -6,7 +6,7 @@ namespace Sello.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class helloController : ControllerBase
     {
         [HttpGet]

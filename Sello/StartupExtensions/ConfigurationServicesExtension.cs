@@ -8,6 +8,12 @@ using Sello.Application.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Sello.Application.Mappings;
+using Sello.Domain.RepositoryContracts;
+using Sello.Infrastructure.Repositories;
+using FluentValidation;
+using Sello.Application.Validators;
+using FluentValidation.AspNetCore;
 
 namespace Sello.Api.StartupExtensions
 {
@@ -15,17 +21,30 @@ namespace Sello.Api.StartupExtensions
     {
         public static IServiceCollection ConfigureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IJwtService, JwtService>();
-
             services.Configure<JwtSettings>(
                 configuration.GetSection("Jwt"));
 
             var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
 
+            services.AddValidatorsFromAssemblyContaining<LoginDtoValidator>();
+            services.AddFluentValidationAutoValidation();
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddHttpContextAccessor();
+
+            //services
+            services.AddTransient<IJwtService, JwtService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProductService, ProductService>();
+
+
+            //repositories
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
@@ -41,6 +60,7 @@ namespace Sello.Api.StartupExtensions
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
 
             services.AddAuthentication(options =>
             {
@@ -61,7 +81,11 @@ namespace Sello.Api.StartupExtensions
                     };
                 });
 
+
             services.AddAuthorization();
+
+
+            services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
             return services;
         }

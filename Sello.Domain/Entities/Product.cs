@@ -18,6 +18,8 @@ namespace Sello.Domain.Entities
 
         public decimal Price { get; set; }
 
+        public bool IsActive { get; set; } = true;
+
         //navigation properties
 
         public Category? Category { get; set; }

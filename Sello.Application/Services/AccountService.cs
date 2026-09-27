@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Sello.Application.DTO;
 using Sello.Application.Helpers;
 using Sello.Application.ServiceContracts;
@@ -81,5 +82,7 @@ namespace Sello.Application.Services
 
             return Result<LoginResponse>.Success(loginResponse);
         }
+
+        
     }
 }
