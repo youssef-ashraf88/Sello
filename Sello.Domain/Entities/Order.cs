@@ -2,6 +2,7 @@
 using Sello.Domain.Enums;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Text;
 
 namespace Sello.Domain.Entities
@@ -9,6 +10,8 @@ namespace Sello.Domain.Entities
     public class Order
     {
         public Guid Id { get; set; }
+
+        public Guid ShippingAddressId { get; set; }
 
         public OrderStatus Status { get; set; }
 
@@ -22,7 +25,7 @@ namespace Sello.Domain.Entities
 
         public ApplicationUser? User { get; set; }
 
-        public IEnumerable<OrderItem>? OrderItems { get; set; }
+        public ICollection<OrderItem>? OrderItems { get; set; }
 
         public ShippingAddress? ShippingAddress { get; set; }
     }

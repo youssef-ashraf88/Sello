@@ -16,5 +16,7 @@ namespace Sello.Domain.Entities.Identity
         public IEnumerable<Order>? Orders { get; set; }
 
         public IEnumerable<Review>? Reviews { get; set; }
+
+        public ICollection<ShippingAddress> ShippingAddresses { get; set; } = new List<ShippingAddress>();
     }
 }

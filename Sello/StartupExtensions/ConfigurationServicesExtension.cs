@@ -39,11 +39,15 @@ namespace Sello.Api.StartupExtensions
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IShippingAddressService, ShippingAddressService>();
 
 
             //repositories
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<IShippingAddressRepository, ShippingAddressRepository>();
 
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>

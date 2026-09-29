@@ -38,6 +38,11 @@ namespace Sello.Infrastructure.Data.Configuration
             builder.Property(sa => sa.PhoneNumber)
                 .IsRequired()
                 .HasMaxLength(20);
+
+            builder.HasOne(sa => sa.User)
+                .WithMany(u => u.ShippingAddresses)
+                .HasForeignKey(sa => sa.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

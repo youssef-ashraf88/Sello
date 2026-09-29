@@ -30,8 +30,8 @@ namespace Sello.Infrastructure.Data.Configuration
 
             builder.HasOne(o => o.ShippingAddress)
                 .WithMany(sa => sa.Orders)
-                .HasForeignKey("OrderId")
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(o => o.ShippingAddressId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

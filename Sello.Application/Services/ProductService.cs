@@ -84,8 +84,6 @@ namespace Sello.Application.Services
             var isAdmin = _httpContextAccessor.HttpContext?.User.IsInRole("Admin") ?? false;
 
             var productQueryParam = _mapper.Map<ProductQueryParams>(productQueryParamsDto);
-            productQueryParam.PageNumber = pageNumber;
-            productQueryParam.PageSize = pageSize;
 
             var productsQuery = isAdmin ? _productRepository.GetAllProductsForAdmins(productQueryParam) : _productRepository.GetAllProducts(productQueryParam);
 

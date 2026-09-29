@@ -15,6 +15,6 @@ namespace Sello.Domain.Entities
 
         public ApplicationUser? User { get; set; }
 
-        public IEnumerable<CartItem>? CartItems { get; set; }
+        public ICollection<CartItem>? CartItems { get; set; }
     }
 }

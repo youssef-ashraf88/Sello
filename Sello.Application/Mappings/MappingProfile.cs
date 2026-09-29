@@ -28,6 +28,22 @@ namespace Sello.Application.Mappings
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
 
             CreateMap<ProductQueryParamsDto, ProductQueryParams>();
+
+            //Cart maps
+            CreateMap<Cart, CartResponseDto>()
+                .ForMember(dest => dest.CartId, opt => opt.MapFrom(src => src.Id));
+
+            CreateMap<CartItem, CartItemResponse>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product!.Name))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Product!.Price))
+                .ForMember(dest => dest.CartItemId, opt => opt.MapFrom(src => src.Id));
+
+            //Shipping Address maps
+            CreateMap<CreateShippingAddressDto, ShippingAddress>();
+
+            CreateMap<UpdateShippingAddressDto, ShippingAddress>();
+
+            CreateMap<ShippingAddress, ShippingAddressResponseDto>();
         }
     }
 }
