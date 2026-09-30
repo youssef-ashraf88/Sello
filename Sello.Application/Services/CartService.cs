@@ -93,6 +93,7 @@ namespace Sello.Application.Services
                 return null;
 
             await _cartRepository.DeleteCartItem(item);
+            await _cartRepository.Save();
             var resposne = _mapper.Map<CartResponseDto>(userCart);
             CalculateCartTotals(resposne);
 

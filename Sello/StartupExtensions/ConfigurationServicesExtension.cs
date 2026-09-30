@@ -41,6 +41,7 @@ namespace Sello.Api.StartupExtensions
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IShippingAddressService, ShippingAddressService>();
+            services.AddScoped<IOrderService, OrderService>();
 
 
             //repositories
@@ -48,6 +49,8 @@ namespace Sello.Api.StartupExtensions
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped<IShippingAddressRepository, ShippingAddressRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IOrderItemRepository, OrderItemRepository>();
 
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>

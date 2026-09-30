@@ -29,8 +29,6 @@ namespace Sello.Domain.Entities
 
         //navigation Property
 
-        public ICollection<Order>? Orders { get; set; }
-
         public ApplicationUser? User { get; set; }
     }
 }

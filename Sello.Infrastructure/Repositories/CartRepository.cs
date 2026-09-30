@@ -38,7 +38,6 @@ namespace Sello.Infrastructure.Repositories
         public async Task DeleteCartItem(CartItem cartItem)
         {
             _db.Remove(cartItem);
-            await Save();
         }
 
         public async Task Save()

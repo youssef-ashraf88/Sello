@@ -16,7 +16,7 @@ namespace Sello.Infrastructure.Data.Configuration
             builder.Property(oi => oi.Quantity)
                 .IsRequired();
 
-            builder.Property(oi => oi.UnitPrice)
+            builder.Property(oi => oi.UnitPriceSnapshot)
                 .IsRequired()
                 .HasPrecision(18,2);
         }

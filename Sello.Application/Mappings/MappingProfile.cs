@@ -44,6 +44,30 @@ namespace Sello.Application.Mappings
             CreateMap<UpdateShippingAddressDto, ShippingAddress>();
 
             CreateMap<ShippingAddress, ShippingAddressResponseDto>();
+
+            CreateMap<Order, ShippingAddressResponseDto>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.IsDefault, opt => opt.Ignore());
+
+            //Order maps
+            CreateMap<Order, CheckoutResponseDto>()
+                .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.OrderItems))
+                .ForMember(dest => dest.ShippingAddress, opt => opt.MapFrom(src => src));
+
+            CreateMap<Order, OrderHistoryResponseDto>()
+                .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.Id));
+
+            CreateMap<Order, OrderDetailsResponseDto>()
+                .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ShippingAddress, opt => opt.MapFrom(src => src))
+                .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.OrderItems));
+
+            //Order item maps
+            CreateMap<OrderItem, OrderItemResponseDto>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductNameSnapshot))
+                .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.UnitPriceSnapshot))
+                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.UnitPriceSnapshot * src.Quantity));
         }
     }
 }

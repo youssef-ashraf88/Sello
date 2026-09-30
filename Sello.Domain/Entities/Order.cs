@@ -11,8 +11,6 @@ namespace Sello.Domain.Entities
     {
         public Guid Id { get; set; }
 
-        public Guid ShippingAddressId { get; set; }
-
         public OrderStatus Status { get; set; }
 
         public decimal TotalAmount { get; set; }
@@ -21,12 +19,19 @@ namespace Sello.Domain.Entities
 
         public Guid UserId { get; set; }
 
+        //shipping address snapshot
+        public string? FullName { get; set; }
+        public string? AddressLine { get; set; }
+        public string? City { get; set; }
+        public string? State { get; set; }
+        public string? PostalCode { get; set; }
+        public string? Country { get; set; }
+        public string? PhoneNumber { get; set; }
+
         //navigation Proderties
 
         public ApplicationUser? User { get; set; }
 
         public ICollection<OrderItem>? OrderItems { get; set; }
-
-        public ShippingAddress? ShippingAddress { get; set; }
     }
 }

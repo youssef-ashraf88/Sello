@@ -12,9 +12,11 @@ namespace Sello.Domain.Entities
 
         public Guid ProductId { get; set; }
 
-        public int Quantity { get; set; }
+        public decimal Quantity { get; set; }
 
-        public decimal UnitPrice { get; set; }
+        public decimal UnitPriceSnapshot { get; set; }
+
+        public string? ProductNameSnapshot { get; set; }
 
         //navigation Property
 
