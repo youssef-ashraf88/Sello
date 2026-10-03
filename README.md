@@ -65,6 +65,7 @@ SelloSolution
 │
 └── Sello.Infrastructure
     └── EF Core, DbContext, Repositories
+```
 
 
 ## Authentication & Authorization
