@@ -141,12 +141,12 @@ API responses directly from the browser.
 
 ### Swagger Overview
 
-![Swagger Overview](docs/images/swagger-admin.jpeg)
+![Admin Overview](docs/images/swagger-admin.jpeg)
 
 ### JWT Authentication
 
-![Swagger Authentication](docs/images/swagger-products.jpeg)
+![Swagger Products](docs/images/swagger-products.jpeg)
 
 ### Products API
 
-![Swagger Products](docs/images/swagger-authentication.jpeg)
+![Swagger Authentication](docs/images/swagger-authentication.jpeg)
