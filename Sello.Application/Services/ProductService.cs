@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Sello.Application.DTO;
+using Sello.Application.Exceptions;
 using Sello.Application.ServiceContracts;
 using Sello.Domain.Entities;
 using Sello.Domain.RepositoryContracts;
@@ -31,11 +32,11 @@ namespace Sello.Application.Services
         {
             var existingProduct = await _productRepository.GetProductByName(createProductDto.Name);
             if (existingProduct is not null)
-                throw new Exception("A product with this name already exists.");
+                throw new BadRequestException("A product with this name already exists.");
 
             var existingCategory = await _categoryRepository.GetCategoryById(createProductDto.CategoryId);
             if (existingCategory == null)
-                return null;
+                throw new NotFoundException("Category not found.");
 
             var newProduct = _mapper.Map<Product>(createProductDto);
             newProduct.Category = existingCategory;
@@ -50,7 +51,7 @@ namespace Sello.Application.Services
         {
             var product = await _productRepository.GetProductById(id);
             if (product == null)
-                return false;
+                throw new NotFoundException("Product not found.");
 
             await _productRepository.DeleteProduct(product);
             return true;
@@ -60,12 +61,12 @@ namespace Sello.Application.Services
         {
             var product = await _productRepository.GetProductById(id);
             if (product == null)
-                return false;
+                throw new NotFoundException("Product not found.");
 
             var existCategory = await _categoryRepository.GetCategoryById(newProduct.CategoryId);
             if (existCategory == null)
-                return false;
-
+                throw new NotFoundException("Category not found.");
+            
             _mapper.Map(newProduct, product);
             await _productRepository.Save();
             
@@ -119,7 +120,7 @@ namespace Sello.Application.Services
                 .FirstOrDefaultAsync();
 
             if (product == null)
-                return null;
+                throw new NotFoundException("Product not found.");
 
             return product;
         }

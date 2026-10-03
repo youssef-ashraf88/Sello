@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Sello.Application.DTO;
+using Sello.Application.Exceptions;
 using Sello.Application.ServiceContracts;
 using Sello.Domain.Entities;
 using Sello.Domain.Enums;
@@ -110,15 +111,7 @@ namespace Sello.Application.Services
         public async Task<PagedResultResponseDto<OrderHistoryResponseDto>> GetAllOrders(int pageNumber, int pageSize)
         {
             var userId = GetUserId();
-            const int maxPageSize = 50;
-            if (pageSize > maxPageSize)
-                pageSize = maxPageSize;
-
-            if (pageNumber < 1)
-                pageNumber = 1;
-
-            if (pageSize < 1)
-                pageSize = 10;
+            CheckingPaginationNumbers(ref pageNumber, ref pageSize);
 
             var query = await _orderRepository.GetUserOrders(userId);
             var totalCount = await query.CountAsync();
@@ -142,15 +135,88 @@ namespace Sello.Application.Services
             var userId = GetUserId();
             var order = await _orderRepository.GetUserOrderById(id, userId);
             if (order == null)
-                return null;
+                throw new NotFoundException("Order not found");
 
             return _mapper.Map<OrderDetailsResponseDto>(order);
         }
+
+        public async Task<PagedResultResponseDto<OrderHistoryResponseDto>> GetAllOrdersForAdmin(OrderStatus? status, int pageNumber, int pageSize)
+        {
+            var query = await _orderRepository.GetAllOrders(status);
+            CheckingPaginationNumbers(ref pageNumber, ref pageSize);
+            var totalCount = await query.CountAsync();
+            var orders = await query.OrderByDescending(o => o.CreatedAt)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var response = _mapper.Map<List<OrderHistoryResponseDto>>(orders);
+            return new PagedResultResponseDto<OrderHistoryResponseDto>
+            {
+                Items = response,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount
+            };
+        }
+
+        public async Task<OrderDetailsResponseDto?> UpdateOrderStatus(Guid orderId, UpdateOrderStatusRequestDto newStatus)
+        {
+            var order = await _orderRepository.GetUserOrderById(orderId, null);
+            if (order == null)
+                throw new NotFoundException("Order not found.");
+
+            if (!IsValidStatusTransition(order.Status, newStatus.Status))
+                throw new InvalidOperationException(
+                    $"Cannot change order status from {order.Status} to {newStatus}.");
+
+            order.Status = newStatus.Status;
+
+            await _orderRepository.Save();
+
+            return _mapper.Map<OrderDetailsResponseDto>(order);
+        }
+
 
 
         private Guid GetUserId()
         {
             return Guid.Parse(_httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value!);
         }
+        private void CheckingPaginationNumbers(ref int pageNumber, ref int pageSize)
+        {
+            const int maxPageSize = 50;
+            if (pageSize > maxPageSize)
+                pageSize = maxPageSize;
+
+            if (pageNumber < 1)
+                pageNumber = 1;
+
+            if (pageSize < 1)
+                pageSize = 10;
+        }
+        private bool IsValidStatusTransition(OrderStatus currentStatus, OrderStatus newStatus)
+        {
+            return currentStatus switch
+            {
+                OrderStatus.Pending =>
+                    newStatus == OrderStatus.Processing ||
+                    newStatus == OrderStatus.Cancelled,
+
+                OrderStatus.Processing =>
+                    newStatus == OrderStatus.Shipped ||
+                    newStatus == OrderStatus.Cancelled,
+
+                OrderStatus.Shipped =>
+                    newStatus == OrderStatus.Delivered,
+
+                OrderStatus.Delivered => false,
+
+                OrderStatus.Cancelled => false,
+
+                _ => false
+            };
+        }
+
     }
 }

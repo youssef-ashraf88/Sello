@@ -31,8 +31,6 @@ namespace Sello.Api.Controllers
         public async Task<ActionResult> EditCategory(Guid id, UpdateCategoryDto updateCategoryDto)
         {
             var category = await _categoryService.EditCategory(id, updateCategoryDto);
-            if (!category)
-                return NotFound("Category does not exist.");
 
             return Ok("Category updated successfully!");
         }
@@ -42,8 +40,6 @@ namespace Sello.Api.Controllers
         public async Task<ActionResult> DeleteCategory(Guid id)
         {
             var category = await _categoryService.DeleteCategory(id);
-            if (!category)
-                return NotFound("Category not exist.");
 
             return Ok("Category deleted successfully!");
         }
@@ -62,8 +58,6 @@ namespace Sello.Api.Controllers
         public async Task<ActionResult<CategoryResponseDto>> GetCategoryById(Guid id)
         {
             var category = await _categoryService.GetCategoryById(id);
-            if (category == null)
-                return NotFound("Category not found");
 
             return Ok(category);
         }

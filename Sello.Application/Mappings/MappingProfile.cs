@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Sello.Application.DTO;
 using Sello.Domain.Entities;
+using Sello.Domain.Entities.Identity;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
@@ -25,7 +26,10 @@ namespace Sello.Application.Mappings
             CreateMap<UpdateProductDto, Product>();
 
             CreateMap<Product, ProductResponseDto>()
-                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name));
+                .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+                .ForMember(dest => dest.AverageRating, opt => opt.
+                 MapFrom(src => src.Reviews.Any()? src.Reviews.Average(r => (double)r.Rating) : 0))
+                .ForMember(dest => dest.ReviewCount, opt => opt.MapFrom(src => src.Reviews.Count()));
 
             CreateMap<ProductQueryParamsDto, ProductQueryParams>();
 
@@ -68,6 +72,15 @@ namespace Sello.Application.Mappings
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.ProductNameSnapshot))
                 .ForMember(dest => dest.UnitPrice, opt => opt.MapFrom(src => src.UnitPriceSnapshot))
                 .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.UnitPriceSnapshot * src.Quantity));
+
+            //Review maps
+            CreateMap<CreateOrUpdateReviewDto, Review>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
+
+            CreateMap<Review, ReviewResponseDto>();
+
+            //Users maps
+            CreateMap<ApplicationUser, UserResponseDto>();
         }
     }
 }

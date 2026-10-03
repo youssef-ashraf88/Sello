@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Sello.Application.DTO;
+using Sello.Application.Exceptions;
 using Sello.Application.ServiceContracts;
 using Sello.Domain.Entities;
 using Sello.Domain.RepositoryContracts;
@@ -40,8 +41,17 @@ namespace Sello.Application.Services
         public async Task<CartResponseDto?> AddItemToCart(CartItemAddRequestDto item)
         {
             var existingProduct = await _productRepository.GetProductById(item.ProductId);
-            if (existingProduct == null || existingProduct.IsActive == false || item.Quantity > existingProduct.StockQuantity || item.Quantity <= 0)
-                return null;
+            if (existingProduct == null)
+                throw new NotFoundException("Product not found.");
+
+            if (!existingProduct.IsActive)
+                throw new BadRequestException("Product is not available.");
+
+            if (item.Quantity <= 0)
+                throw new BadRequestException("Quantity must be greater than zero.");
+
+            if (item.Quantity > existingProduct.StockQuantity)
+                throw new BadRequestException("Request quantity exceeds available stock.");               
 
             var userCart = await GetOrCreateCart();
             var existingItem = userCart.CartItems?.FirstOrDefault(x => x.ProductId == item.ProductId);
@@ -51,7 +61,7 @@ namespace Sello.Application.Services
             else
             {
                 if (existingItem.Quantity + item.Quantity > existingProduct.StockQuantity)
-                    return null;
+                    throw new BadRequestException("Requested quantity exceeds available stock.");
 
                 existingItem.Quantity += item.Quantity;
             }
@@ -69,11 +79,11 @@ namespace Sello.Application.Services
             var userCart = await GetOrCreateCart();
             var item = userCart.CartItems?.FirstOrDefault(p => p.Id == id);
             if (item == null)
-                return null;
+                throw new NotFoundException("Cart item not found.");
 
             var product = await _productRepository.GetProductById(id);
             if (request.Quantity > product.StockQuantity)
-                return null;
+                throw new BadRequestException("Requested quantity exceeds available stock.");
 
             item.Quantity = request.Quantity;
 
@@ -90,7 +100,7 @@ namespace Sello.Application.Services
             var userCart = await GetOrCreateCart();
             var item = userCart.CartItems?.FirstOrDefault(p => p.Id == id);
             if (item == null)
-                return null;
+                throw new NotFoundException("Cart item not found.");
 
             await _cartRepository.DeleteCartItem(item);
             await _cartRepository.Save();

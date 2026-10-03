@@ -14,6 +14,7 @@ using Sello.Infrastructure.Repositories;
 using FluentValidation;
 using Sello.Application.Validators;
 using FluentValidation.AspNetCore;
+using Sello.Api.ExceptionHandling;
 
 namespace Sello.Api.StartupExtensions
 {
@@ -42,6 +43,9 @@ namespace Sello.Api.StartupExtensions
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<IShippingAddressService, ShippingAddressService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IReviewService, ReviewService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IDashboardService, DashboardService>();
 
 
             //repositories
@@ -51,6 +55,8 @@ namespace Sello.Api.StartupExtensions
             services.AddScoped<IShippingAddressRepository, ShippingAddressRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+            services.AddScoped<IReviewRepository, ReviewRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
 
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -93,6 +99,9 @@ namespace Sello.Api.StartupExtensions
 
 
             services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
+
+            services.AddExceptionHandler(options => { });
+            services.AddExceptionHandler<GlobalExceptionHandler>();
 
             return services;
         }

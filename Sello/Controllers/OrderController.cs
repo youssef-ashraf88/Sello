@@ -37,8 +37,6 @@ namespace Sello.Api.Controllers
         public async Task<ActionResult<OrderDetailsResponseDto>> GetOrderDetails(Guid id)
         {
             var order = await _orderService.GetOrderById(id);
-            if (order == null)
-                return NotFound("Order with this id does not exist");
 
             return Ok(order);
         }

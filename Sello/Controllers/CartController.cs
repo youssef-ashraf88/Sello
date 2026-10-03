@@ -33,8 +33,6 @@ namespace Sello.Api.Controllers
         public async Task<ActionResult<CartResponseDto>> AddItemToCart(CartItemAddRequestDto cartItemAddRequestDto)
         {
             var cart = await _cartService.AddItemToCart(cartItemAddRequestDto);
-            if (cart == null)
-                return NotFound("Invalid cart item request");
 
             return Ok(cart);
         }
@@ -43,8 +41,6 @@ namespace Sello.Api.Controllers
         public async Task<ActionResult<CartResponseDto>> EditCartItemQuantity(Guid id, CartItemUpdateRequestDto cartItemUpdateRequestDto)
         {
             var cart = await _cartService.EditExistingCart(id, cartItemUpdateRequestDto);
-            if (cart == null)
-                return NotFound("Invalid cart item request");
 
             return Ok(cart);
         }
@@ -53,8 +49,6 @@ namespace Sello.Api.Controllers
         public async Task<ActionResult<CartResponseDto>> RemoveItemFromCart(Guid id)
         {
             var cart = await _cartService.DeleteItemFromCart(id);
-            if (cart == null)
-                return NotFound("Cart item not found");
 
             return Ok(cart);
         }

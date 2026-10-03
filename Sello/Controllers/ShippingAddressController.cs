@@ -36,8 +36,6 @@ namespace Sello.Api.Controllers
         public async Task<ActionResult<ShippingAddressResponseDto>> GetShippingAddressById(Guid id)
         {
             var address = await _shippingAddressService.GetShippingAddressById(id);
-            if (address == null)
-                return NotFound("Address with this id does not exist.");
 
             return Ok(address);
         }
@@ -46,8 +44,6 @@ namespace Sello.Api.Controllers
         public async Task<IActionResult> EditShippingAddress(Guid id, UpdateShippingAddressDto addressDto)
         {
             var edited = await _shippingAddressService.EditShippingAddress(id, addressDto);
-            if (edited == false)
-                return NotFound("Address with this id does not exist.");
 
             return Ok("Address updated successfully!");
         }
@@ -56,8 +52,6 @@ namespace Sello.Api.Controllers
         public async Task<IActionResult> DeleteShippingAddress(Guid id)
         {
             var deleted = await _shippingAddressService.DeleteShippingAddress(id);
-            if (deleted == false)
-                return NotFound("Address with this id does not exist.");
 
             return Ok("Address deleted successfully!");
         }

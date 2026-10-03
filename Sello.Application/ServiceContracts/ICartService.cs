@@ -9,10 +9,10 @@ namespace Sello.Application.ServiceContracts
     {
         Task<CartResponseDto> GetOrCreateUserCart();
 
-        Task<CartResponseDto?> AddItemToCart(CartItemAddRequestDto cartItemAddRequestDto);
+        Task<CartResponseDto> AddItemToCart(CartItemAddRequestDto cartItemAddRequestDto);
 
-        Task<CartResponseDto?> EditExistingCart(Guid id, CartItemUpdateRequestDto cartItemUpdateRequestDto);
+        Task<CartResponseDto> EditExistingCart(Guid id, CartItemUpdateRequestDto cartItemUpdateRequestDto);
 
-        Task<CartResponseDto?> DeleteItemFromCart(Guid id);
+        Task<CartResponseDto> DeleteItemFromCart(Guid id);
     }
 }

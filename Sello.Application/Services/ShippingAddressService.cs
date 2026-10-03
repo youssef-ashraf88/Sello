@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Sello.Application.DTO;
+using Sello.Application.Exceptions;
 using Sello.Application.ServiceContracts;
 using Sello.Domain.Entities;
 using Sello.Domain.RepositoryContracts;
@@ -53,7 +54,7 @@ namespace Sello.Application.Services
             var userId = GetUserId();
             var userAddress = await GetUserAddress(id, userId);
             if (userAddress == null)
-                return null;
+                throw new NotFoundException("Shipping address not found.");
 
             var response = _mapper.Map<ShippingAddressResponseDto>(userAddress);
             return response;
@@ -64,9 +65,9 @@ namespace Sello.Application.Services
             var userId = GetUserId();
             var userAddress = await GetUserAddress(id, userId);
             if (userAddress == null)
-                return false;
+                throw new NotFoundException("Shipping address not found.");
 
-            if(addressDto.IsDefault == true)
+            if (addressDto.IsDefault == true)
             {
                 await MakeEveryAddressNotDefault(userId);
             }
@@ -81,7 +82,7 @@ namespace Sello.Application.Services
             var userId = GetUserId();
             var userAddress = await GetUserAddress(id, userId);
             if (userAddress == null)
-                return false;
+                throw new NotFoundException("Shipping address not found.");
 
             await _shippingAddressRepository.DeleteShippingAddress(userAddress);
             return true;

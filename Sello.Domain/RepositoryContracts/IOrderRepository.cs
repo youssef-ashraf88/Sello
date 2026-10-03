@@ -1,4 +1,5 @@
 ﻿using Sello.Domain.Entities;
+using Sello.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,7 +10,10 @@ namespace Sello.Domain.RepositoryContracts
     {
         Task AddOrder(Order order);
         Task<IQueryable<Order>> GetUserOrders(Guid userId);
-        Task<Order?> GetUserOrderById(Guid orderId, Guid userId);
+        Task<Order?> GetUserOrderById(Guid orderId, Guid? userId);
+        Task<IQueryable<Order>> GetAllOrders(OrderStatus? status);
+        Task<int> GetTotalOrders();
+        Task<decimal> GetTotalRevenue();
         Task Save();
         Task BeginTransaction();
         Task CommitTransaction();

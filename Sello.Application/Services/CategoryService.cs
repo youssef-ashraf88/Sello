@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Sello.Application.DTO;
+using Sello.Application.Exceptions;
 using Sello.Application.ServiceContracts;
 using Sello.Domain.Entities;
 using Sello.Domain.RepositoryContracts;
@@ -24,7 +25,7 @@ namespace Sello.Application.Services
         {
             var existingCategory = await _categoryRepository.GetCategoryByName(category!.Name!);
             if (existingCategory is not null)
-                throw new Exception("A category with this name already exists.");
+                throw new BadRequestException("A category with this name already exists.");
 
             var newCategory = _mapper.Map<Category>(category);
 
@@ -39,7 +40,7 @@ namespace Sello.Application.Services
         {
             var category = await _categoryRepository.GetCategoryById(id);
             if (category == null)
-                return false;
+                throw new NotFoundException("Category not found.");
 
             await _categoryRepository.DeleteCategory(category);
             return true;
@@ -49,7 +50,7 @@ namespace Sello.Application.Services
         {
             var category = await _categoryRepository.GetCategoryById(id);
             if (category == null)
-                return false;
+                throw new NotFoundException("Category not found.");
 
             _mapper.Map(newCategory, category);
             await _categoryRepository.Save();
@@ -69,7 +70,7 @@ namespace Sello.Application.Services
         {
             var category = await _categoryRepository.GetCategoryById(id);
             if (category == null)
-                return null;
+                throw new NotFoundException("Category not found.");
 
             var categoryResponse = _mapper.Map<CategoryResponseDto>(category);
             return categoryResponse;

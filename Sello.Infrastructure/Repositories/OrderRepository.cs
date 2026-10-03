@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Sello.Domain.Entities;
+using Sello.Domain.Enums;
 using Sello.Domain.RepositoryContracts;
 using Sello.Infrastructure.Data;
 using System;
@@ -28,11 +29,35 @@ namespace Sello.Infrastructure.Repositories
             return _db.Orders.Where(o => o.UserId == userId);
         }
 
-        public async Task<Order?> GetUserOrderById(Guid orderId, Guid userId)
+        public async Task<Order?> GetUserOrderById(Guid orderId, Guid? userId)
+        {
+            var order = _db.Orders
+                .Include(o => o.OrderItems).AsQueryable();
+            if(userId is not null)
+                order = order.Where(o => o.UserId == userId);
+
+            return await order.FirstOrDefaultAsync(o => o.Id == orderId);
+        }
+
+        public async Task<IQueryable<Order>> GetAllOrders(OrderStatus? status)
+        {
+            var query = _db.Orders.Include(o => o.OrderItems).AsQueryable();
+            if (status.HasValue)
+                query = query.Where(o => o.Status == status.Value);
+
+            return query;
+        }
+
+        public async Task<int> GetTotalOrders()
+        {
+            return await _db.Orders.CountAsync();
+        }
+
+        public async Task<decimal> GetTotalRevenue()
         {
             return await _db.Orders
-                .Include(o => o.OrderItems)
-                .FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == userId);
+                .Where(o => o.Status != OrderStatus.Cancelled)
+                .SumAsync(o => o.TotalAmount);
         }
 
         public async Task BeginTransaction()
@@ -64,5 +89,7 @@ namespace Sello.Infrastructure.Repositories
         {
             await _db.SaveChangesAsync();
         }
+
+        
     }
 }

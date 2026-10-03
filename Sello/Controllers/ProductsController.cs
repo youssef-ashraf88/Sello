@@ -22,8 +22,6 @@ namespace Sello.Api.Controllers
         public async Task<ActionResult<ProductResponseDto>> CreateProduct(CreateProductDto createProductDto)
         {
             var newProduct = await _productService.CreateProduct(createProductDto);
-            if (newProduct == null)
-                return NotFound("The category does not exist.");
 
             return CreatedAtAction(nameof(GetProductById), new { id = newProduct.Id }, newProduct);
         }
@@ -33,8 +31,6 @@ namespace Sello.Api.Controllers
         public async Task<ActionResult> EditProduct(Guid id, UpdateProductDto updateProductDto)
         {
             var updatedProduct = await _productService.EditProduct(id, updateProductDto);
-            if (!updatedProduct)
-                return NotFound("Product or category does not exist");
 
             return Ok("Product updated successfully!");
         }
@@ -44,8 +40,6 @@ namespace Sello.Api.Controllers
         public async Task<ActionResult> DeleteProduct(Guid id)
         {
             var deletedProduct = await _productService.DeleteProduct(id);
-            if (!deletedProduct)
-                return NotFound("Product does not exist.");
 
             return Ok("Product deleted successfullty!");
         }
@@ -64,10 +58,10 @@ namespace Sello.Api.Controllers
         public async Task<ActionResult<ProductResponseDto>> GetProductById(Guid id)
         {
             var product = await _productService.GetProductById(id);
-            if (product == null)
-                return NotFound("Product not found.");
 
             return Ok(product);
         }
+
+        
     }
 }

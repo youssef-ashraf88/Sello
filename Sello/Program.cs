@@ -10,6 +10,8 @@ builder.Services.AddControllers();
 
 builder.Services.ConfigureServices(builder.Configuration);
 
+builder.Services.AddProblemDetails();
+
 //Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -33,6 +35,8 @@ builder.Services.AddSwaggerGen(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+app.UseExceptionHandler();
 
 app.UseSwagger();
 app.UseSwaggerUI();

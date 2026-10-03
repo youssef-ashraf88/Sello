@@ -70,6 +70,11 @@ namespace Sello.Infrastructure.Repositories
             return _db.Products.Where(p => p.Id == id).AsNoTracking().AsQueryable();
         }
 
+        public async Task<int> GetTotalProducts()
+        {
+            return await _db.Products.CountAsync();
+        }
+
         public async Task Save()
         {
             await _db.SaveChangesAsync();
